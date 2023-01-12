@@ -3,13 +3,13 @@ from textwrap import wrap
 class BigInteg:
     length = 2048
     hex = '0123456789abcdef'
-    def __init__(self, n): #конструктор
+    def __init__(self, n): 
         n = n[-self.length:]
         for char in n:
             if char not in self.hex:
                  break
         self.n = n.zfill(self.length)
-    def __bin__(self):
+    def tobin(self):
         bin_num=""
         num = self.n.lstrip('0')
         i=0
@@ -49,7 +49,7 @@ class BigInteg:
             i = i+1
         return bin_num.zfill(self.length*4)
 
-    def elder_bit(self): #номер старшого біта числа
+    def elder_bit(self): 
         binary = self.toBin().lstrip('0')
         return len(binary) - 1
 
@@ -89,17 +89,18 @@ class BigInteg:
         c = ""
         carry = 0
         for i in range(len(self.n)-1, 0, -1):
-            a = self.todem(self.n[i])    
+            a = self.todem(self.n[i])  
             b = other.todem(other.n[i])
             res = a + b + carry
-            if res > 16:
+            if res > 15:
                 carry = 1
                 res -= 16
             else: 
                 carry = 0
             res = self.tohex(res)
             c += res
-        return c[::-1]    
+        return c[::-1]
+
     def __sub__(self, other):
         c = ""
         borrow = 0
@@ -114,10 +115,88 @@ class BigInteg:
                 borrow = 0
             res = self.tohex(res)
             c += res
-        return c[::-1]   
-                  
-    
+        return c[::-1]
 
+    def LongMulOneDigit(self, b):
+        carry=0
+        c=""
+        a = self.n.lstrip("0")
+        b = int(self.todem(b))
+        for i in range(len(self.n)-1, 0, -1):
+            a = int(self.todem(self.n[i])) 
+            res=a*b+carry
+            if res > 15:
+                carry = res//16
+                res =res%16
+            else: 
+                carry = 0
+            res = self.tohex(res)
+            c += res
+        return c[::-1].lstrip('0')
+
+    def __mul__(self,other):
+        mull = other.n.lstrip('0')[::-1]
+        lst = []
+        for i in range(0, len(mull)):
+            temp=self.LongMulOneDigit(mull[i])
+            temp+= "0"*i
+            temp = BigInteg(temp)
+            lst.append(temp)
+        last = lst[0]
+        if len(lst) == 1:
+            return last.n.lstrip("0")
+        for i in range(1, len(lst)):
+            a = lst[i]
+            res = BigInteg(last + a)
+            last = res
+        return res.n.lstrip("0")
+    def LongCmp(self, other):
+        i = len(self.n)-1
+        while self.n[-i] == other.n[-i] and i != -1:
+            i = i-1
+        if i == -1: 
+            return 0
+        else:
+            if self.n[-i]>other.n[-i]: 
+                return 1
+            else: return -1
+    def LongDivMod(self, other):
+        A = self.n.lstrip('0')
+        B = other.n.lstrip('0')
+        o_len = len(B)
+        to_add = A[o_len:]
+        A = BigInteg(A[:o_len])
+        res = ""
+        while A.LongCmp(other) != 0:
+            if A.LongCmp(other) == -1:
+                return res, A.n.lstrip("0")
+            test = 0
+            while A.LongCmp(other) > 0:
+                a = A.n.lstrip('0')
+                b = other.n.lstrip('0')
+                A = A - other
+                A = BigInteg(A)
+                test += 1
+            if A.LongCmp(other) == 0:
+                test += 1
+            test = self.tohex(test)
+            res += test
+            if len(to_add) != 0:
+                A = A.n.lstrip("0") + to_add[0]
+                to_add = to_add[1:]
+                A = BigInteg(A)
+        return res
+    def __pow__(self, other):
+        c=""
+        d = other.n.lstrip('0')[::-1]
+        res=0
+        for i in range (len(d)):
+            res+=other.todem(d[i])*16**i
+        temp=BigInteg('1')
+        for i in range(res):
+            temp = self * temp
+            temp=BigInteg(temp)
+        return temp.n              
     def fromBin(self, binary):
         result = ''
         result_arr = tuple(wrap(binary, 4))
@@ -157,7 +236,22 @@ class BigInteg:
         return result.lstrip("0")
 
 
-n=BigInteg("a15")
-n1=BigInteg("bc")
-n2=n1+n
-print(n2.lstrip('0'))
+n=BigInteg("a15d")
+n1=BigInteg("2")
+n4=BigInteg("bd45a8d3")
+nn1=(n4+n).lstrip('0')
+nn2=(n4-n).lstrip('0')
+nn3=(n*n4).lstrip('f')
+nn4=(n**n1).lstrip('0')
+nn5=n.LongDivMod(n4)
+nn6=n4.tobin().lstrip('0')
+nn7=n4.fromBin(nn6).lstrip('0')
+enter=f'''Сума = {nn1}
+Віднімання = {nn2}
+Множення = {nn3}
+Степінь числа = {nn4}
+Ділення = {nn5}
+Бінарний вигляд = {nn6}
+З бінарного = {nn7}
+'''
+print(enter)
