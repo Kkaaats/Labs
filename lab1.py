@@ -50,7 +50,7 @@ class BigInteg:
         return bin_num.zfill(self.length*4)
 
     def elder_bit(self): 
-        binary = self.toBin().lstrip('0')
+        binary = self.tobin().lstrip('0')
         return len(binary) - 1
 
     def todem(self, t):
@@ -169,9 +169,10 @@ class BigInteg:
         res = ""
         while A.LongCmp(other) != 0:
             if A.LongCmp(other) == -1:
-                return res, A.n.lstrip("0")
+                #res=BigInteg("0")
+                return "0"
             test = 0
-            while A.LongCmp(other) > 0:
+            while A.LongCmp(other) ==1:
                 a = A.n.lstrip('0')
                 b = other.n.lstrip('0')
                 A = A - other
@@ -234,24 +235,60 @@ class BigInteg:
             elif binary == '1111':
                 result = result + 'f'
         return result.lstrip("0")
+   #Редукція Барретта
+    def right_shift(self, n):
+        bit = self.tobin()
+        res= self.fromBin(n*'0'+bit[:-n])
+        res1=BigInteg(res)
+        return res1.n
 
+    def left_shift(self, n):
+        bit = self.tobin()
+        res=bit[n:] + '0' *n
+        res= self.fromBin(res)
+        res1=BigInteg(res)
+        return res1
 
-n=BigInteg("a15d")
-n1=BigInteg("2")
-n4=BigInteg("bd45a8d3")
-nn1=(n4+n).lstrip('0')
-nn2=(n4-n).lstrip('0')
-nn3=(n*n4).lstrip('f')
-nn4=(n**n1).lstrip('0')
-nn5=n.LongDivMod(n4)
-nn6=n4.tobin().lstrip('0')
-nn7=n4.fromBin(nn6).lstrip('0')
-enter=f'''Сума = {nn1}
-Віднімання = {nn2}
-Множення = {nn3}
-Степінь числа = {nn4}
-Ділення = {nn5}
-Бінарний вигляд = {nn6}
-З бінарного = {nn7}
-'''
-print(enter)
+    def BarrettReduction(self, n):
+        c=BigInteg("1")
+        k= n.elder_bit()+1
+        #m=c.left_shift(2*k).LongDivMod(n)
+        m=BigInteg("733")
+        q= self.right_shift(k-1)
+        q=BigInteg(q)
+        q = q*m
+        q=BigInteg(q)
+        q= q.right_shift(k+1)
+        q=BigInteg(q)
+        a=q*n
+        a=BigInteg(a)
+        r=self-a
+        r=BigInteg(r)
+        while(r.LongCmp(n)!=-1):
+            r-=n
+            r=BigInteg(r)
+        return r.n
+
+a=BigInteg("45a5c")
+b=BigInteg("21f")
+print(a.BarrettReduction(b).lstrip('0'))
+# print(a.right_shift(2))
+# n=BigInteg("a15d3")
+# n1=BigInteg("2")
+# n4=BigInteg("bd45a8d3")
+# nn1=(n4+n).lstrip('0')
+# nn2=(n4-n).lstrip('0')
+# nn3=(n*n4).lstrip('f')
+# nn4=(n**n1).lstrip('0')
+# nn5=n4.LongDivMod(n)
+# nn6=n4.tobin().lstrip('0')
+# nn7=n4.fromBin(nn6).lstrip('0')
+# enter=f'''Сума = {nn1}
+# Віднімання = {nn2}
+# Множення = {nn3}
+# Степінь числа = {nn4}
+# Ділення = {nn5}
+# Бінарний вигляд = {nn6}
+# З бінарного = {nn7}
+# '''
+# print(enter)
