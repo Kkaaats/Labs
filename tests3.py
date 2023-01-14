@@ -6,8 +6,8 @@ b = PB(''.join(choices('01', k=580)))
 c = PB(''.join(choices('01', k=100)))
 n1=((a+b)*c).n
 n2=((a*c + b*c).n)
-# print(len(n1))
-# print(len(a.n))
+print(len(n1))
+print(len(a.n))
 if n1 != n2:
     print("Error1")
 else: print("Cat")
