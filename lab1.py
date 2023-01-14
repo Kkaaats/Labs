@@ -272,23 +272,22 @@ class BigInteg:
 a=BigInteg("45a5c")
 b=BigInteg("21f")
 print(a.BarrettReduction(b).lstrip('0'))
-# print(a.right_shift(2))
-# n=BigInteg("a15d3")
-# n1=BigInteg("2")
-# n4=BigInteg("bd45a8d3")
-# nn1=(n4+n).lstrip('0')
-# nn2=(n4-n).lstrip('0')
-# nn3=(n*n4).lstrip('f')
-# nn4=(n**n1).lstrip('0')
-# nn5=n4.LongDivMod(n)
-# nn6=n4.tobin().lstrip('0')
-# nn7=n4.fromBin(nn6).lstrip('0')
-# enter=f'''Сума = {nn1}
-# Віднімання = {nn2}
-# Множення = {nn3}
-# Степінь числа = {nn4}
-# Ділення = {nn5}
-# Бінарний вигляд = {nn6}
-# З бінарного = {nn7}
-# '''
-# print(enter)
+n=BigInteg("a15d3")
+n1=BigInteg("2")
+n4=BigInteg("bd45a8d3")
+nn1=(n4+n).lstrip('0')
+nn2=(n4-n).lstrip('0')
+nn3=(n*n4).lstrip('f')
+nn4=(n**n1).lstrip('0')
+nn5=n4.LongDivMod(n)
+nn6=n4.tobin().lstrip('0')
+nn7=n4.fromBin(nn6).lstrip('0')
+enter=f'''Сума = {nn1}
+Віднімання = {nn2}
+Множення = {nn3}
+Степінь числа = {nn4}
+Ділення = {nn5}
+Бінарний вигляд = {nn6}
+З бінарного = {nn7}
+'''
+print(enter)
